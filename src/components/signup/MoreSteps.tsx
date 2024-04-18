@@ -8,6 +8,8 @@ import $ from "jquery";
 import HoneyPotz from "../HoneyPotz";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { auth } from "../../firebase";
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 
 interface MoreStepsProps {
   collectedData: any;
@@ -50,11 +52,13 @@ const MoreSteps: React.FC<MoreStepsProps> = ({
       validationSchema: MoreStepSchema,
 
       // If we hit the Login Button, the value provided by user will be stored in "values"
-      onSubmit: (values) => {
+      onSubmit: async (values) => {
         setCollectedData({ ...collectedData, ...values });
         console.log("Collected Data", { ...collectedData, ...values });
         // Create User
         setLoading(true);
+        const userCredential = await createUserWithEmailAndPassword(auth, collectedData.email, collectedData.password);
+        await sendEmailVerification(userCredential.user);
         fetch(`${process.env.REACT_APP_API_URL}/users/signup`, {
           method: "POST",
           headers: {
@@ -77,7 +81,9 @@ const MoreSteps: React.FC<MoreStepsProps> = ({
               return toast.error(data.message);
             }
             toast.success("User Created Successfully Please Verify Your Email");
-            navigate("/");
+
+            alert('Verification email sent. Please check your email to verify your account.');
+            navigate("/verify/:token");
           })
           .catch((err) => {
             toast.error("User Creation Failed");

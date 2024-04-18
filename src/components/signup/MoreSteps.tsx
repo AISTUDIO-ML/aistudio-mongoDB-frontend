@@ -65,7 +65,7 @@ const MoreSteps: React.FC<MoreStepsProps> = ({
           console.error("Failed to create user and send verification email", error);
           toast.error("Registration failed: " + error.message);
         }
-        await fetch(`${process.env.REACT_APP_API_URL}/users/signup`, {
+        fetch(`${process.env.REACT_APP_API_URL}/users/signup`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

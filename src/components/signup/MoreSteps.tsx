@@ -57,8 +57,14 @@ const MoreSteps: React.FC<MoreStepsProps> = ({
         console.log("Collected Data", { ...collectedData, ...values });
         // Create User
         setLoading(true);
-        const userCredential = await createUserWithEmailAndPassword(auth, collectedData.email, collectedData.password);
-        await sendEmailVerification(userCredential.user);
+        try {
+          const userCredential = await createUserWithEmailAndPassword(auth, collectedData.email, collectedData.password);
+          await sendEmailVerification(userCredential.user);
+          // Additional code...
+        } catch (error: any) {
+          console.error("Failed to create user and send verification email", error);
+          toast.error("Registration failed: " + error.message);
+        }
         await fetch(`${process.env.REACT_APP_API_URL}/users/signup`, {
           method: "POST",
           headers: {

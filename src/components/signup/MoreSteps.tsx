@@ -59,7 +59,7 @@ const MoreSteps: React.FC<MoreStepsProps> = ({
         setLoading(true);
         const userCredential = await createUserWithEmailAndPassword(auth, collectedData.email, collectedData.password);
         await sendEmailVerification(userCredential.user);
-        fetch(`${process.env.REACT_APP_API_URL}/users/signup`, {
+        await fetch(`${process.env.REACT_APP_API_URL}/users/signup`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -82,7 +82,7 @@ const MoreSteps: React.FC<MoreStepsProps> = ({
             }
             toast.success("User Created Successfully Please Verify Your Email");
 
-            alert('Verification email sent. Please check your email to verify your account.');
+            toast.success('Verification email sent. Please check your email to verify your account.');
             navigate("/verify/:token");
           })
           .catch((err) => {
